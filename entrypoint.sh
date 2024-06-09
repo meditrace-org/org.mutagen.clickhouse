@@ -7,7 +7,7 @@ clickhouse client -n <<-EOSQL
 
     create table vr.video (
         uuid UUID Default generateUUIDv4(),
-        local_path String,
+        url String,
         is_processed Bool
     )
     ENGINE = MergeTree()
