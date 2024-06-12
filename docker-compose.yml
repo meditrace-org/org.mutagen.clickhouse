@@ -13,6 +13,8 @@ services:
       - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
       - ${PWD}/entrypoint.sh:/docker-entrypoint-initdb.d/entrypoint.sh
     restart: unless-stopped
+    networks:
+      - mutagen-backend
 
   grafana:
     build:
@@ -27,3 +29,10 @@ services:
     depends_on:
       - clickhouse
     restart: unless-stopped
+    networks:
+      - mutagen-backend
+
+networks:
+  mutagen-backend:
+    external: true
+    name: mutagen-backend
