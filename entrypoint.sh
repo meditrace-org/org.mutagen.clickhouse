@@ -25,7 +25,7 @@ clickhouse client -n <<-EOSQL
         start_time DateTime,
         end_time Nullable(DateTime),
         text String,
-        req_from IPv4,
+        req_from IPv4
     )
     ENGINE = Log;
 
@@ -45,7 +45,7 @@ clickhouse client -n <<-EOSQL
         text_embedding Array(Float32) DEFAULT [1, 1, 1, 1],
         image_embedding Array(Float32),
         image_metric Nullable(Float32),
-        text_metric Nullable(Float32),
+        text_metric Nullable(Float32)
     )
     ENGINE = MergeTree
     partition by image_model
