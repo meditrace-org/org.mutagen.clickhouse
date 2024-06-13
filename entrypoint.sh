@@ -25,7 +25,7 @@ clickhouse client -n <<-EOSQL
         start_time DateTime,
         end_time Nullable(DateTime),
         text String,
-        req_from IPv4,
+        req_from IPv4
     )
     ENGINE = Log;
 
@@ -41,7 +41,7 @@ clickhouse client -n <<-EOSQL
         num Int64,
         image_model String,
         image_embedding Array(Float32),
-        image_metric Nullable(Float32),
+        image_metric Nullable(Float32)
     )
     ENGINE = MergeTree
     partition by image_model
@@ -50,13 +50,13 @@ clickhouse client -n <<-EOSQL
     create table vr.audio_embeddings (
         uuid UUID,
         num Int64,
-        text_model Nullable(String),
+        text_model String,
         text Nullable(String),
-        text_embedding Array(Float32) DEFAULT [1, 1, 1, 1],
+        text_embedding Array(Float32) DEFAULT [1, 1, 1, 1]
     )
     ENGINE = MergeTree
     partition by text_model
-    ORDER BY (uuid, num);
+    ORDER BY (uuid, num)
 
     SET allow_experimental_annoy_index = 1;
 
@@ -65,7 +65,7 @@ clickhouse client -n <<-EOSQL
         num Int64,
         image_model String,
         `image_embedding` Array(Float32),
-        INDEX annoy_image image_embedding TYPE annoy('cosineDistance', 1000) GRANULARITY 1000,
+        INDEX annoy_image image_embedding TYPE annoy('cosineDistance', 1000) GRANULARITY 1000
     )
     ENGINE = MergeTree
     partition by image_model
