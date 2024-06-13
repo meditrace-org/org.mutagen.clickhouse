@@ -60,21 +60,21 @@ clickhouse client -n <<-EOSQL
 
     SET allow_experimental_annoy_index = 1;
 
-    CREATE TABLE vr.embeddings_annoy (
+    create table vr.embeddings_annoy (
         uuid UUID,
         num Int64,
         image_model String,
-        `image_embedding` Array(Float32),
-        INDEX annoy_image image_embedding TYPE annoy('cosineDistance', 1000) GRANULARITY 1000
+        image_embedding Array(Float32),
+        INDEX annoy_image image_embedding TYPE annoy('cosineDistance', 1000) GRANULARITY 1000,
     )
     ENGINE = MergeTree
-    PARTITION BY image_model
+    partition by image_model
     ORDER BY (uuid, num);
 
     CREATE TABLE vr.coef (
-        alfa Float32,
+        alpha Float32,
         beta Float32,
-        threshold Float32
+        score Nullable(Float32)
     )
     ENGINE = Log;
 
