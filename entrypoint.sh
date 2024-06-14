@@ -38,42 +38,48 @@ clickhouse client -n <<-EOSQL
 
     CREATE TABLE vr.embeddings (
         uuid UUID,
-        num Int64,
         image_model String,
-        image_embedding Array(Float32),
-        image_metric Nullable(Float32)
+        image_embedding Array(Float32)
     )
     ENGINE = MergeTree
     PARTITION BY image_model
-    ORDER BY (uuid, num);
+    ORDER BY uuid;
 
     CREATE TABLE vr.audio_embeddings (
         uuid UUID,
-        num Int64,
         text_model String,
         text Nullable(String),
         text_embedding Array(Float32) DEFAULT [1, 1, 1, 1]
     )
     ENGINE = MergeTree
     PARTITION BY text_model
-    ORDER BY (uuid, num);
+    ORDER BY uuid;
+
+    CREATE TABLE vr.face_embeddings (
+        uuid UUID,
+        image_model String,
+        image_embedding Array(Float32)
+    )
+    ENGINE = MergeTree
+    PARTITION BY image_model
+    ORDER BY uuid;
 
     SET allow_experimental_annoy_index = 1;
 
     create table vr.embeddings_annoy (
         uuid UUID,
-        num Int64,
         image_model String,
         image_embedding Array(Float32),
         INDEX annoy_image image_embedding TYPE annoy('cosineDistance', 1000) GRANULARITY 1000,
     )
     ENGINE = MergeTree
     partition by image_model
-    ORDER BY (uuid, num);
+    ORDER BY uuid;
 
     CREATE TABLE vr.coef (
         alpha Float32,
         beta Float32,
+        gamma Float32,
         score Nullable(Float32)
     )
     ENGINE = Log;
