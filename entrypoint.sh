@@ -78,8 +78,6 @@ clickhouse client -n <<-EOSQL
     )
     ENGINE = Log;
 
-    INSERT INTO vr.coef VALUES (0.5, 0.5, 0.5);
-
     CREATE ROLE analytics;
     GRANT SELECT ON vr.* TO analytics;
     CREATE USER monitor IDENTIFIED WITH sha256_password BY 'monitor3000';
