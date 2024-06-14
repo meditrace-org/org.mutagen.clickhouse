@@ -79,7 +79,7 @@ clickhouse client -n <<-EOSQL
     CREATE TABLE vr.coef (
         alpha Float32,
         beta Float32,
-        gamma Float32,
+        strategy String,
         score Nullable(Float32)
     )
     ENGINE = Log;
