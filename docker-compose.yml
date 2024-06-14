@@ -6,8 +6,8 @@ services:
     container_name: clickhouse
     hostname: clickhouse
     ports:
-      - "8123:8123"
-      - "9000:9000"
+      - "${MUTAGEN_CLICKHOUSE_HTTP_PORT:-8123}:8123"
+      - "${MUTAGEN_CLICKHOUSE_TPC_PORT:-9000}:9000"
     volumes:
       - ./fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
       - ./fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
@@ -28,7 +28,7 @@ services:
       - ./fs/volumes/grafana/etc/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
       - ./data/grafana:/var/lib/grafana
     ports:
-      - "3000:3000"
+      - "${MUTAGEN_GRAFANA_PORT:-3000}:3000"
     environment:
       - GF_SECURITY_ADMIN_USER
       - GF_SECURITY_ADMIN_PASSWORD
