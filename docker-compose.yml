@@ -9,21 +9,21 @@ services:
       - "8123:8123"
       - "9000:9000"
     volumes:
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
-      - ${PWD}/entrypoint.sh:/docker-entrypoint-initdb.d/entrypoint.sh
+      - ./fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ./fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - ./entrypoint.sh:/docker-entrypoint-initdb.d/entrypoint.sh
     restart: unless-stopped
     networks:
       - mutagen-backend
 
   grafana:
     build:
-      context: ${PWD}/docker_files/
+      context: ./docker_files/
       dockerfile: grafana.Dockerfile
     container_name: grafana
     hostname: grafana
     volumes:
-      - ${PWD}/fs/volumes/grafana/etc/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./fs/volumes/grafana/etc/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
     ports:
       - "3000:3000"
     environment:
