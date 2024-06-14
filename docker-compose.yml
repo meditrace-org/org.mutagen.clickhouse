@@ -2,7 +2,7 @@ version: '3.8'
 services:
   clickhouse:
     image: clickhouse/clickhouse-server
-    user: "101:101"
+    user: "root"
     container_name: clickhouse
     hostname: clickhouse
     ports:
@@ -21,6 +21,7 @@ services:
     build:
       context: ./docker_files/
       dockerfile: grafana.Dockerfile
+    user: "root"
     container_name: grafana
     hostname: grafana
     volumes:
