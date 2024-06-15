@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<clickhouse replace="true">
+    <profiles>
+        <default>
+            <max_memory_usage>10000000000</max_memory_usage>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <load_balancing>in_order</load_balancing>
+            <log_queries>1</log_queries>
+        </default>
+    </profiles>
+    <users>
+        <default>
+            <password>iyLOLr1EXIWin8z4zMNe3UFKJ5qoba</password>
+            <profile>default</profile>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+        </default>
+    </users>
+</clickhouse>

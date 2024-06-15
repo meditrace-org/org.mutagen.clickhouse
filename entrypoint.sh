@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-clickhouse client -n <<-EOSQL
+clickhouse client --user=${CH_USERNAME} --password=${CH_PASSWORD} -n <<-EOSQL
 
     CREATE DATABASE vr;
 
