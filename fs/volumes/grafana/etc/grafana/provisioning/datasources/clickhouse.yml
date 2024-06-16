@@ -7,5 +7,5 @@ datasources:
       port: 9000
       server: clickhouse
       username: default
-      password: main1234
+      password: iyLOLr1EXIWin8z4zMNe3UFKJ5qoba
       tlsSkipVerify: false

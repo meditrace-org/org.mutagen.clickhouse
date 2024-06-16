@@ -1,23 +1,23 @@
 #!/bin/bash
 set -e
 
-clickhouse client -n <<-EOSQL
+clickhouse client --user=${CH_USERNAME} --password=${CH_PASSWORD} -n <<-EOSQL
 
     CREATE DATABASE vr;
 
-    create table vr.video (
-        uuid UUID Default generateUUIDv4(),
+    CREATE TABLE vr.video (
+        uuid UUID DEFAULT generateUUIDv4(),
         url String,
         is_processed Bool
     )
     ENGINE = MergeTree()
-    partition by is_processed
-    primary key uuid;
+    PARTITION BY is_processed
+    PRIMARY KEY uuid;
 
-    create table vr.video_stat (
-      amount Int32,
-      processed Int32
-     )
+    CREATE TABLE vr.video_stat (
+        amount Int32,
+        processed Int32
+    )
     ENGINE = AggregatingMergeTree
     ORDER BY (amount, processed);
 
@@ -25,60 +25,64 @@ clickhouse client -n <<-EOSQL
         start_time DateTime,
         end_time Nullable(DateTime),
         text String,
-        req_from IPv4,
+        req_from IPv4
     )
     ENGINE = Log;
 
     CREATE MATERIALIZED VIEW IF NOT EXISTS vr.video_stat_mv
     TO vr.video_stat
-    as select
-           count(uuid) as amount,
-           sum(is_processed) as processed
-    from  vr.video;
+    AS SELECT
+           count(uuid) AS amount,
+           sum(is_processed) AS processed
+    FROM vr.video;
 
-    create table vr.embeddings (
+    CREATE TABLE vr.embeddings (
         uuid UUID,
-        num Int64,
         image_model String,
-        image_embedding Array(Float32),
-        image_metric Nullable(Float32),
+        image_embedding Array(Float32)
     )
     ENGINE = MergeTree
-    partition by image_model
-    ORDER BY (uuid, num);
+    PARTITION BY image_model
+    ORDER BY uuid;
 
-    create table vr.audio_embeddings (
+    CREATE TABLE vr.audio_embeddings (
         uuid UUID,
-        num Int64,
-        text_model Nullable(String),
+        text_model String,
         text Nullable(String),
-        text_embedding Array(Float32) DEFAULT [1, 1, 1, 1],
+        text_embedding Array(Float32) DEFAULT [1, 1, 1, 1]
     )
     ENGINE = MergeTree
-    partition by text_model
-    ORDER BY (uuid, num);
+    PARTITION BY text_model
+    ORDER BY uuid;
+
+    CREATE TABLE vr.face_embeddings (
+        uuid UUID,
+        image_model String,
+        image_embedding Array(Float32)
+    )
+    ENGINE = MergeTree
+    PARTITION BY image_model
+    ORDER BY uuid;
 
     SET allow_experimental_annoy_index = 1;
 
     create table vr.embeddings_annoy (
         uuid UUID,
-        num Int64,
         image_model String,
-        `image_embedding` Array(Float32),
+        image_embedding Array(Float32),
         INDEX annoy_image image_embedding TYPE annoy('cosineDistance', 1000) GRANULARITY 1000,
     )
     ENGINE = MergeTree
     partition by image_model
-    ORDER BY (uuid, num);
+    ORDER BY uuid;
 
-    create table vr.coef (
-        alfa Float32,
+    CREATE TABLE vr.coef (
+        alpha Float32,
         beta Float32,
-        threshold Float32
+        strategy String,
+        score Nullable(Float32)
     )
     ENGINE = Log;
-
-    insert into vr.coef values (0.5, 0.5, 0.5);
 
     CREATE ROLE analytics;
     GRANT SELECT ON vr.* TO analytics;
