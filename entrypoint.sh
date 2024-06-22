@@ -8,7 +8,8 @@ clickhouse client --user=${CH_USERNAME} --password=${CH_PASSWORD} -n <<-EOSQL
     CREATE TABLE vr.video (
         uuid UUID DEFAULT generateUUIDv4(),
         url String,
-        is_processed Bool
+        is_processed Bool,
+        dttm DateTime DEFAULT now()
     )
     ENGINE = MergeTree()
     PARTITION BY is_processed
@@ -39,7 +40,8 @@ clickhouse client --user=${CH_USERNAME} --password=${CH_PASSWORD} -n <<-EOSQL
     CREATE TABLE vr.embeddings (
         uuid UUID,
         image_model String,
-        image_embedding Array(Float32)
+        image_embedding Array(Float32),
+        dttm DateTime DEFAULT now()
     )
     ENGINE = MergeTree
     PARTITION BY image_model
@@ -49,7 +51,8 @@ clickhouse client --user=${CH_USERNAME} --password=${CH_PASSWORD} -n <<-EOSQL
         uuid UUID,
         text_model String,
         text Nullable(String),
-        text_embedding Array(Float32) DEFAULT [1, 1, 1, 1]
+        text_embedding Array(Float32) DEFAULT [1, 1, 1, 1],
+        dttm DateTime DEFAULT now()
     )
     ENGINE = MergeTree
     PARTITION BY text_model
@@ -58,7 +61,8 @@ clickhouse client --user=${CH_USERNAME} --password=${CH_PASSWORD} -n <<-EOSQL
     CREATE TABLE vr.face_embeddings (
         uuid UUID,
         image_model String,
-        image_embedding Array(Float32)
+        image_embedding Array(Float32),
+        dttm DateTime DEFAULT now()
     )
     ENGINE = MergeTree
     PARTITION BY image_model
