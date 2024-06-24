@@ -74,11 +74,36 @@ clickhouse client --user=${CH_USERNAME} --password=${CH_PASSWORD} -n <<-EOSQL
         uuid UUID,
         image_model String,
         image_embedding Array(Float32),
-        INDEX annoy_image image_embedding TYPE annoy('cosineDistance', 1000) GRANULARITY 1000,
+        INDEX annoy_image image_embedding TYPE annoy('cosineDistance', 100) GRANULARITY 100000,
     )
     ENGINE = MergeTree
-    partition by image_model
     ORDER BY uuid;
+
+    create table vr.embeddings_mean (
+      uuid UUID,
+      image_embedding Array(Float32)
+    )
+    ENGINE = MergeTree
+    ORDER BY uuid;
+
+    create table vr.embeddings_max (
+      uuid UUID,
+      image_embedding Array(Float32)
+    )
+    ENGINE = MergeTree
+    ORDER BY uuid;
+
+    truncate table vr.embeddings_mean;
+    truncate table vr.embeddings_max;
+
+    insert into vr.embeddings_mean
+    select uuid, sumForEach(image_embedding) / count(image_embedding) as image_embedding from vr.embeddings
+    group by uuid;
+
+    insert into vr.embeddings_max
+    select uuid, maxForEach(image_embedding) as image_embedding from vr.embeddings
+    group by uuid;
+
 
     CREATE TABLE vr.coef (
         alpha Float32,
